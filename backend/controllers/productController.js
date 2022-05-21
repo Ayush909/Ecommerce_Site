@@ -1,36 +1,29 @@
 const Product = require('../models/productModel');
 const ErrorHandler = require('../utils/errorHandler');
+const catchAsyncError = require('../middlewares/catchAsyncErrors');
 
 //Create Product
-exports.createProduct = async (req,res,next) => {
-    try{
+exports.createProduct = catchAsyncError(async (req,res,next) => {
+    
         const product = await Product.create(req.body);
 
         res.status(201).json({
             success : true,
             product
         });
-    }catch(err){
-        return next(new ErrorHandler(500,err));
-    }
-}
+    
+});
 
 //Get All products
-exports.getAllProducts = async (req,res,next) => {
-
-    try{
-        const products = await Product.find();
-        res.status(200).json({
-            products
-        })
-    }catch(err){
-        return next(new ErrorHandler(500,err));
-    }
-
-}
+exports.getAllProducts = catchAsyncError(async (req,res,next) => {
+    const products = await Product.find();
+    res.status(200).json({
+        products
+    })
+})
 
 //Get single product details
-exports.getProductDetails = async (req,res,next) => {
+exports.getProductDetails = catchAsyncError(async (req,res,next) => {
     const product = await Product.findById(req.params.id);
 
     if(!product){
@@ -41,11 +34,11 @@ exports.getProductDetails = async (req,res,next) => {
         success : true,
         product
     })
-}
+});
 
 
 //Update Products
-exports.updateProduct = async (req,res,next) => {
+exports.updateProduct = catchAsyncError(async (req,res,next) => {
 
     try{
         let product = await Product.findById(req.params.id);
@@ -68,11 +61,11 @@ exports.updateProduct = async (req,res,next) => {
         return next(new ErrorHandler(500,err));
     }
 
-}
+});
 
 //Delete a product
 
-exports.deleteProduct = async (req,res,next) => {
+exports.deleteProduct = catchAsyncError(async (req,res,next) => {
     try{
         const product = await Product.findById(req.params.id);
 
@@ -90,4 +83,4 @@ exports.deleteProduct = async (req,res,next) => {
     }catch(err){
         return next(new ErrorHandler(500,err));
     }
-}
+})
