@@ -31,7 +31,11 @@ class ApiFeatures {
         return this;
     }
 
-    
+    pagination(recordsPerPage){
+        const pageNumber = Number(this.queryStr.page) || 0;
+        this.query = this.query.skip(pageNumber * recordsPerPage).limit(recordsPerPage);
+        return this;
+    }
 }
 
 module.exports = ApiFeatures;
