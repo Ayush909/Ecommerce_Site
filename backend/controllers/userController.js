@@ -24,3 +24,32 @@ exports.registerUser = catchAsyncError(async (req,res,next)=>{
         token
     })
 })
+
+//Login User
+exports.loginUser = catchAsyncError(async (req,res,next) => {
+    const {email, password} = req.body;
+   
+
+    if(!email || !password){
+        return next(new ErrorHandler(401,"Please enter email & password both"));
+    }
+
+    const user = await User.findOne({email}).select("+password");
+
+    if(!user){
+        return next(new ErrorHandler(400,"Invalid email or password"));
+    }
+
+    const isPasswordMatch = await user.comparePassword(password);
+
+    if(!isPasswordMatch){
+        return next(new ErrorHandler(401,"Invalid email or password"));
+    }
+
+    const token = user.getJWTToken();
+
+    res.status(201).json({
+        success : true,
+        token
+    })
+})
