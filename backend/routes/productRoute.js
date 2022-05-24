@@ -1,6 +1,8 @@
 const express = require('express');
 const { getAllProducts, createProduct,updateProduct,deleteProduct,getProductDetails } = require('../controllers/productController');
+const tokenValidation = require('../middlewares/tokenValidation');
 const router = express.Router();
+
 
 router.get('/',getAllProducts);
 

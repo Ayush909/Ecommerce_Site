@@ -24,7 +24,7 @@ exports.getAllProducts = catchAsyncError(async (req,res,next) => {
         .search()
         .filter()
         .pagination(productsPerPage);
-    console.log('apifeature: ',apifeature)
+    // console.log('apifeature: ',apifeature)
     const products = await apifeature.query;
     res.status(200).json({
         success : true,
