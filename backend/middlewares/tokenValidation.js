@@ -4,7 +4,7 @@ const User = require('../models/userModel');
 const ErrorHandler = require('../utils/errorHandler');
 
 
-const tokenValidation = catchAsyncError( async (req,res,next) => {
+exports.tokenValidation = catchAsyncError( async (req,res,next) => {
     const {token} = req.cookies;
 
     if(!token){
@@ -18,4 +18,15 @@ const tokenValidation = catchAsyncError( async (req,res,next) => {
     next();
 })
 
-module.exports = tokenValidation;
+
+exports.authorizedRoles = (...roleRequired) => {
+
+    return catchAsyncError((req,res,next) => {
+        if(!roleRequired.includes(req.user.role)){
+            return next(new ErrorHandler(401,`Role: ${req.user.role} not allowed to access this resource`));
+        }
+
+        next();
+    })
+
+}

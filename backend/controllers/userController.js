@@ -2,6 +2,7 @@ const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncError = require('../middlewares/catchAsyncErrors');
 const User = require('../models/userModel');    
 const sendToken = require('../utils/sendToken');
+const jwt = require('jsonwebtoken');
 
 //Register a user
 exports.registerUser = catchAsyncError(async (req,res,next)=>{
@@ -55,4 +56,36 @@ exports.logout = catchAsyncError( (req,res,next) => {
         success : true,
         message : "Logged out"
     });
+})
+
+exports.forgotPassword = catchAsyncError(async (req,res,next) => {
+    const {email} = req.body;
+
+    //check if email is given by user
+    if(!email) {
+        return next(new ErrorHandler(400,"Please provide a valid email"));
+    }
+
+    //check if given email exists in the Database
+    const user = await User.findOne({email});
+
+    //if user not found
+    if(!user){
+        return next(new ErrorHandler(400,"User not found"));
+    }
+    
+
+    //if user exists in Database, we will send reset link to their email
+    const resetToken = jwt.sign({id : user._id},process.env.JWT_SECRET_KEY,{
+        expiresIn : '15m'
+    });
+    const resetURL = `http://localhost:5000/reset-password/${resetToken}`
+
+    res.status(200).json({
+        success : true,
+        resetURL
+    })
+
+
+    next();
 })
