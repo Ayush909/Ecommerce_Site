@@ -42,3 +42,5 @@ process.on('unhandledRejection',(err)=>{
                 process.exit(1);
         });
 })
+
+//did binary search today, no dev

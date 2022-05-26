@@ -79,7 +79,9 @@ exports.forgotPassword = catchAsyncError(async (req,res,next) => {
     const resetToken = jwt.sign({id : user._id},process.env.JWT_SECRET_KEY,{
         expiresIn : '15m'
     });
-    const resetURL = `http://localhost:5000/reset-password/${resetToken}`
+
+    console.log('req.baseURL: ',req.baseURL,' hostname :', req.get('host'))
+    const resetURL = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`
 
     res.status(200).json({
         success : true,
