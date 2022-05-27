@@ -43,4 +43,3 @@ process.on('unhandledRejection',(err)=>{
         });
 })
 
-//did binary search today, no dev
