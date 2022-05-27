@@ -58,6 +58,7 @@ exports.logout = catchAsyncError( (req,res,next) => {
     });
 })
 
+//forgot password
 exports.forgotPassword = catchAsyncError(async (req,res,next) => {
     const {email} = req.body;
 
@@ -95,13 +96,15 @@ exports.forgotPassword = catchAsyncError(async (req,res,next) => {
     next();
 })
 
+
+//reset password 
 exports.resetPassword = catchAsyncError( async (req,res,next) => {
     const {token,newPassword} = req.body;
     const payload =jwt.decode(token)
     const userid = payload.id;
 
     //verify if user exists in database
-    const user = await User.findById(userid).select('password name email');
+    const user = await User.findById(userid).select('+password');
 
     //if user not found
     if(!user){
@@ -121,3 +124,42 @@ exports.resetPassword = catchAsyncError( async (req,res,next) => {
     })
 
 })
+
+//get user details
+exports.getUserDetails = catchAsyncError(async (req,res,next) => {
+    const user = await User.findById(req.user.id);
+
+    res.status(200).json({
+        success : true,
+        user
+    })
+})
+
+//loggedIn User Password Update
+exports.passwordUpdate = catchAsyncError( async (req,res,next) => {
+    const {oldPassword, newPassword ,confirmNewPassword} = req.body;
+
+    if(!oldPassword ||  !newPassword || !confirmNewPassword){
+        next(new ErrorHandler(400,"Please enter all values"));
+    }
+
+    const user = await User.findById(req.user.id).select('+password');
+
+    //checking if user entered correct old password
+    const isPasswordMatch = await user.comparePassword(oldPassword);
+
+    if(!isPasswordMatch){
+        return next(new ErrorHandler(401,"Invalid email or password"));
+    }
+
+    //check if new password and confirm new password are equal
+    if (newPassword !== confirmNewPassword) {
+        return next(new ErrorHandler(400,"Password does not match"));
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+
+    sendToken(user,201,res);
+} )
