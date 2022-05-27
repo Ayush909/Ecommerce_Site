@@ -6,11 +6,11 @@ const router = express.Router();
 
 router.get('/',getAllProducts);
 
-router.post('/new',tokenValidation,authorizedRoles("admin"),createProduct);
+router.post('/admin/new',tokenValidation,authorizedRoles("admin"),createProduct);
 
-router.put('/:id',tokenValidation,authorizedRoles("admin"),updateProduct);
+router.put('/admin/:id',tokenValidation,authorizedRoles("admin"),updateProduct);
 
-router.delete('/:id',tokenValidation,authorizedRoles("admin"),deleteProduct);
+router.delete('/admin/:id',tokenValidation,authorizedRoles("admin"),deleteProduct);
 
 router.get('/:id',getProductDetails);
 
