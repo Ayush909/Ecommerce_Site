@@ -237,7 +237,7 @@ exports.deleteUser = catchAsyncError(async (req, res, next) => {
   
     if (!user) {
       return next(
-        new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 400)
+        new ErrorHandler(400,`User does not exist with Id: ${req.params.id}`)
       );
     }
   
