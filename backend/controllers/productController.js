@@ -80,7 +80,7 @@ exports.deleteProduct = catchAsyncError(async (req,res,next) => {
     const product = await Product.findById(req.params.id);
 
     if(!product){
-        return  next(new ErrorHandler(500,"Product Not Found!"));
+        return  next(new ErrorHandler(404,"Product Not Found!"));
     }
 
     await product.remove();
@@ -111,7 +111,7 @@ exports.createReview =  catchAsyncError(async (req,res,next) => {
     //check if product exists
     const product = await Product.findById(productId);
     if(!product){
-        return  next(new ErrorHandler(500,"Product Not Found!"));
+        return  next(new ErrorHandler(404,"Product Not Found!"));
     }
 
     //return true if reviews array already contains a review by the same user
@@ -144,3 +144,17 @@ exports.createReview =  catchAsyncError(async (req,res,next) => {
         success: true
     });
 })
+
+// Get All Reviews of a product
+exports.getProductReviews = catchAsyncError(async (req, res, next) => {
+    const product = await Product.findById(req.query.productId);
+  
+    if (!product) {
+      return next(new ErrorHander(404,"Product not found"));
+    }
+  
+    res.status(200).json({
+      success: true,
+      reviews: product.reviews,
+    });
+});
