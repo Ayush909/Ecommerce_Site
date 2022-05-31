@@ -48,3 +48,30 @@ exports.getSingleOrder = catchAsyncError(async (req, res, next) => {
       order,
     });
 });
+
+// get Orders of logged in users
+exports.myOrders = catchAsyncError(async (req, res, next) => {
+    const orders = await Order.find({ orderBy: req.user._id });
+  
+    res.status(200).json({
+      success: true,
+      orders
+    });
+});
+
+// Get Details of All Orders -- Admin Access only
+exports.getAllOrders = catchAsyncError(async (req, res, next) => {
+    const orders = await Order.find();
+  
+    let totalAmount = 0;
+  
+    orders.forEach((order) => {
+      totalAmount += order.totalPrice;
+    });
+  
+    res.status(200).json({
+      success: true,
+      totalAmount,
+      orders
+    });
+});
