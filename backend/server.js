@@ -5,6 +5,7 @@ const connectDatabase = require('../backend/config/DBConnetion');
 require('dotenv').config({path: 'backend/config/config.env'});
 const productRoute = require('../backend/routes/productRoute');
 const userRoute = require('../backend/routes/userRoute');
+const orderRoute = require('../backend/routes/orderRoute');
 const errorMiddleware = require('./middlewares/error');
 const PORT = process.env.PORT;
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 //API Routes
 app.use('/api/products',productRoute);
 app.use('/api/users',userRoute)
+app.use('/api/orders',orderRoute);
 
 //Error Handling Middleware
 app.use(errorMiddleware);
