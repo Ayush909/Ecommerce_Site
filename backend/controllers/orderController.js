@@ -75,3 +75,33 @@ exports.getAllOrders = catchAsyncError(async (req, res, next) => {
       orders
     });
 });
+
+//updating order status -- admin access only
+exports.updateOrder = catchAsyncError(async (req, res, next) => {
+  const {id} = req.params;
+
+  const order = await Order.findById(id);
+
+  if(order.orderStatus === "Delivered"){
+    return next(new ErrorHandler(400, "Order is already Devlivered"));
+  }
+
+  order.orderItems.forEach(order => {
+    await updateStock(order.product,order.quantity);
+  })
+
+  order.orderStatus = req.body.status;
+  
+
+  if(req.body.status === "Delivered"){
+    order.deliveredAt = Date.now();
+  }
+
+  await order.save();
+
+  res.status(200).json({
+    success : true,
+    order
+  })
+
+})  
