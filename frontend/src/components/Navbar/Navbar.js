@@ -7,14 +7,14 @@ import {Typography} from '@mui/material'
 const Navbar = () => {
   return (
     <div>
-        <Typography 
+        {/* <Typography 
             variant='h2' 
             color="primary" 
             align='center' 
             
         >
             Hello world
-        </Typography>
+        </Typography> */}
     </div>
   )
 }
